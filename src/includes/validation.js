@@ -1,6 +1,6 @@
 import { configure, defineRule, ErrorMessage, Field as VeeField, Form as VeeForm } from 'vee-validate'
 import {
-  alpha_spaces as alphaSpaces,
+  alpha_dash as alphaDash,
   confirmed,
   email,
   max,
@@ -21,7 +21,7 @@ export default {
     defineRule('tos', required)
     defineRule('min', min)
     defineRule('max', max)
-    defineRule('alpha_spaces', alphaSpaces)
+    defineRule('alpha_dash', alphaDash)
     defineRule('email', email)
     defineRule('min_value', minValue)
     defineRule('max_value', maxValue)
@@ -37,7 +37,7 @@ export default {
           required: `The field ${ctx.field} is required.`,
           min: `The field ${ctx.field} is too short.`,
           max: `The field ${ctx.field} is too long.`,
-          alpha_spaces: `The field ${ctx.field} may only contain alphabetical characters and spaces.`,
+          alpha_dash: `The field ${ctx.field} may only contain alphabetical characters, numbers, dashes, or underscores.`,
           email: `The field ${ctx.field} must be a valid email.`,
           min_value: `The field ${ctx.field} is too low.`,
           max_value: `The field ${ctx.field} is too high.`,

@@ -10,7 +10,8 @@
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
           <li>
-            <a class="px-2 text-white" href="#" @click.prevent="toggleAuthModal">Login / Register</a>
+            <a class="px-2 text-white" href="#" v-if="userLoggedIn" @click.prevent="logOut">Logout</a>
+            <a class="px-2 text-white" href="#" v-else @click.prevent="toggleAuthModal">Login / Register</a>
           </li>
           <li>
             <a class="px-2 text-white" href="#">Manage</a>
@@ -22,18 +23,26 @@
 </template>
 
 <script>
-import { mapWritableState } from "pinia";
+import { mapWritableState } from 'pinia'
 import useModalStore from "@/stores/modal";
+import useUserStore from '@/stores/user'
+import { auth, signOut } from '@/includes/firebase'
 
 export default {
   name: "AppHeader",
   computed: {
     ...mapWritableState(useModalStore, ['isOpen']),
+    ...mapWritableState(useUserStore, ['userLoggedIn'])
   },
   methods: {
     toggleAuthModal() {
       this.isOpen = !this.isOpen
       console.log(this.isOpen)
+    },
+    logOut() {
+      signOut(auth)
+      this.userLoggedIn = false
+      console.log(this.userLoggedIn)
     },
   },
 }

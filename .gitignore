@@ -28,4 +28,4 @@ coverage
 *.sw?
 
 notes.txt
-
+src/includes/firebase.config.js

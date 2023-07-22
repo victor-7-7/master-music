@@ -37,7 +37,10 @@
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
+  import { defineComponent } from 'vue'
+  import { auth, signInWithEmailAndPassword } from '@/includes/firebase'
+  import { mapWritableState } from 'pinia'
+  import useUserStore from '@/stores/user'
 
   export default defineComponent({
     name: "LoginComp",
@@ -45,7 +48,7 @@
       return {
         loginSchema: {
           email: 'required|email',
-          password: 'required|min:9|max:100',
+          password: 'required|min:7|max:100',
         },
         login_in_submission: false,
         login_show_alert: false,
@@ -53,18 +56,30 @@
         login_alert_msg: "Please wait! We are logging you in.",
       }
     },
+    computed: {
+      ...mapWritableState(useUserStore, ['userLoggedIn'])
+    },
     methods: {
       login(values) {
-        this.login_show_alert = true
         this.login_in_submission = true
+        this.login_show_alert = true
         this.login_alert_variant = "bg-blue-500"
         this.login_alert_msg = "Please wait! We are logging you in."
 
-        //todo: send request to server and receive a response
-
-        this.login_alert_variant = "bg-green-500"
-        this.login_alert_msg = "Success! You are now logged in. Welcome home."
-        console.log(values)
+        signInWithEmailAndPassword(auth, values.email, values.password)
+          .then((userCredential) => {
+            // Signed in
+            this.userLoggedIn = true
+            this.login_alert_variant = "bg-green-500"
+            this.login_alert_msg = "Success! You are now logged in. Welcome home."
+            console.log('SING IN', userCredential)
+          })
+          .catch((error) => {
+            this.login_in_submission = false // Чтобы разблочить кнопку Submit
+            this.login_alert_variant = "bg-red-500"
+            this.login_alert_msg = "An unexpected error occurred. Please try again later."
+            console.log(error)
+          })
       },
     },
   })

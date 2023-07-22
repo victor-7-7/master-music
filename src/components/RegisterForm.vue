@@ -97,17 +97,21 @@
 
 <script>
   import { defineComponent } from 'vue'
+  import { auth, fireStore, collection, addDoc,
+    createUserWithEmailAndPassword } from '@/includes/firebase'
+  import useUserStore from '@/stores/user'
+  import { mapWritableState } from 'pinia'
 
   export default defineComponent({
     name: "RegisterComp",
     data() {
       return {
         registerSchema: {
-          name: 'required|min:3|max:100|alpha_spaces',
+          name: 'required|min:3|max:100|alpha_dash',
           email: 'required|min:3|max:100|email',
           age: 'required|min_value:18|max_value:100',
           // Запрещаем юзерам устанавливать пароль в виде password
-          password: 'required|min:9|max:100|excluded:password',
+          password: 'required|min:7|max:100|excluded:password',
           confirm_password: 'passwords_mismatch:@password',
           country: 'required|country_excluded:Antarctica',
           tos: 'tos',
@@ -122,18 +126,47 @@
         reg_alert_msg: "Please wait! Your account is being created.",
       }
     },
+    computed: {
+      ...mapWritableState(useUserStore, ['userLoggedIn'])
+    },
     methods: {
-      register(values) {
+      async register(values) {
         this.reg_show_alert = true
         this.reg_in_submission = true
         this.reg_alert_variant = "bg-blue-500"
         this.reg_alert_msg = "Please wait! Your account is being created."
 
-        //todo: send request to server and receive a response
-
+        let userCredential = null
+        let docRef = null
+        try {
+          // Creates a new user account. On successful creation of the user account,
+          // this user will also be signed in to your application.
+          userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
+          // ------------
+          // Если все ок, то сервис Firebase сохранит токен нового залогиненного юзера
+          // на сервере и в local storage браузера и присоединит этот токен к запросу
+          // при вызове addDoc
+          // ------------
+          // Добавляем документ в коллекцию users Firestore сервиса
+          docRef = await addDoc(collection(fireStore, 'users'), {
+            name: values.name,
+            // Дублируем для удобства (поле email уже записано в auth сервисе)
+            email: values.email,
+            age: values.age,
+            country: values.country,
+          })
+        }
+        catch (error) {
+          this.reg_in_submission = false // Чтобы разблочить кнопку Submit
+          this.reg_alert_variant = "bg-red-500"
+          this.reg_alert_msg = "An unexpected error occurred. Please try again later."
+          console.log(error)
+          return
+        }
+        this.userLoggedIn = true
         this.reg_alert_variant = "bg-green-500"
         this.reg_alert_msg = "Success! Your account has been created."
-        console.log(values)
+        console.log(userCredential, docRef)
       },
     },
   })
