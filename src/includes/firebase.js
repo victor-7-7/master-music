@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, signOut } from 'firebase/auth'
+  signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth'
 import { getFirestore, collection, addDoc } from 'firebase/firestore'
 import { firebaseConfig } from '@/includes/firebase.config'
 
@@ -18,5 +18,5 @@ const fireStore = getFirestore(firebaseApp)
 
 export { auth, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut,
-  fireStore, collection, addDoc
+  fireStore, collection, addDoc, updateProfile
 }

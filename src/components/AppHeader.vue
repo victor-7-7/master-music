@@ -9,13 +9,19 @@
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
-          <li>
-            <a class="px-2 text-white" href="#" v-if="userLoggedIn" @click.prevent="logOut">Logout</a>
-            <a class="px-2 text-white" href="#" v-else @click.prevent="toggleAuthModal">Login / Register</a>
+          <li v-if="!userLoggedIn">
+            <a class="px-2 text-white" href="#" @click.prevent="toggleAuthModal">Login / Register</a>
           </li>
-          <li>
-            <a class="px-2 text-white" href="#">Manage</a>
-          </li>
+          <!-- v-else директива не будет работать повторно в li-элементе, поэтому
+           нужен template-раппер -->
+          <template  v-else>
+            <li>
+              <a class="px-2 text-white" href="#" @click.prevent="manage">Manage</a>
+            </li>
+            <li>
+              <a class="px-2 text-white" href="#" @click.prevent="logOut">Logout</a>
+            </li>
+          </template>
         </ul>
       </div>
     </nav>
@@ -23,26 +29,31 @@
 </template>
 
 <script>
-import { mapWritableState } from 'pinia'
+import { mapActions, mapWritableState } from 'pinia'
 import useModalStore from "@/stores/modal";
 import useUserStore from '@/stores/user'
-import { auth, signOut } from '@/includes/firebase'
 
 export default {
   name: "AppHeader",
   computed: {
     ...mapWritableState(useModalStore, ['isOpen']),
-    ...mapWritableState(useUserStore, ['userLoggedIn'])
+    ...mapWritableState(useUserStore, ['userLoggedIn']),
   },
   methods: {
+    // https://pinia.vuejs.org/core-concepts/actions.html
+    ...mapActions(useUserStore, ['userSignOut']),
+
     toggleAuthModal() {
       this.isOpen = !this.isOpen
       console.log(this.isOpen)
     },
-    logOut() {
-      signOut(auth)
-      this.userLoggedIn = false
-      console.log(this.userLoggedIn)
+
+    manage() {
+
+    },
+
+    async logOut() {
+      await this.userSignOut()
     },
   },
 }
