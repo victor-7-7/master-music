@@ -2,12 +2,22 @@
   <!-- Header -->
   <header id="header" class="bg-gray-700">
     <nav class="container mx-auto flex justify-start items-center py-5 px-4">
+      <!-- атрибут: exact-active-class="no-active" - видео 12-007 момент 04:25
+       чтобы не менять цвет элемента под действием опции linkExactActiveClass.
+       значение no-active взято с потолка, но поможет кодеру понять что к чему -->
       <!-- App Name -->
-      <a class="text-white font-bold uppercase text-2xl mr-4" href="#">Music</a>
+      <router-link
+        class="text-white font-bold uppercase text-2xl mr-4"
+        exact-active-class="no-active"
+        :to="{ name: 'home', }"
+      >Music</router-link>
 
       <div class="flex flex-grow items-center">
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
+          <li>
+            <router-link class="px-2 text-white" :to="{ name: 'about', }">About</router-link>
+          </li>
           <!-- Navigation Links -->
           <li v-if="!userLoggedIn">
             <a class="px-2 text-white" href="#" @click.prevent="toggleAuthModal">Login / Register</a>
@@ -16,7 +26,7 @@
            нужен template-раппер -->
           <template  v-else>
             <li>
-              <a class="px-2 text-white" href="#" @click.prevent="manage">Manage</a>
+              <router-link class="px-2 text-white" :to="{ name: 'manage', }">Manage</router-link>
             </li>
             <li>
               <a class="px-2 text-white" href="#" @click.prevent="logOut">Logout</a>
@@ -30,7 +40,7 @@
 
 <script>
 import { mapActions, mapWritableState } from 'pinia'
-import useModalStore from "@/stores/modal";
+import useModalStore from "@/stores/modal"
 import useUserStore from '@/stores/user'
 
 export default {
@@ -48,12 +58,17 @@ export default {
       console.log(this.isOpen)
     },
 
-    manage() {
-
-    },
-
     async logOut() {
       await this.userSignOut()
+      // https://router.vuejs.org/guide/
+      // Vue is giving access to this.$router as well as the current route
+      // as this.$route inside of any component.
+      // Vue-движок инжектит рут и рутер в каждый компонент. После разлогинивания
+      // юзера если он был на странице, требующей аутентификации,
+      if (this.$route.meta.requiresAuth) {
+        // то выкидываем его на домашнюю страницу сайта.
+        this.$router.replace({ name: 'home' })
+      }
     },
   },
 }
