@@ -64,7 +64,7 @@ export default {
       // Vue is giving access to this.$router as well as the current route
       // as this.$route inside of any component.
       // Vue-движок инжектит рут и рутер в каждый компонент. После разлогинивания
-      // юзера если он был на странице, требующей аутентификации,
+      // если юзер был на странице, требующей аутентификации,
       if (this.$route.meta.requiresAuth) {
         // то выкидываем его на домашнюю страницу сайта.
         this.$router.replace({ name: 'home' })
