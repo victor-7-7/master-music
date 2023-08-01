@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 import {
   auth,
-  fireStore,
+  fireStore, doc, setDoc,
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword, signOut,
 } from '@/includes/firebase'
-import { doc, setDoc } from 'firebase/firestore';
 
 export default defineStore('user', {
   state: () => ({
@@ -62,7 +61,6 @@ export default defineStore('user', {
       })
       // ------------
       this.userLoggedIn = true
-      // console.log(userCredential, docRef)
       console.log('DOC', docRef)
     },
 

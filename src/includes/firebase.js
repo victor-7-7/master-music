@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth'
-import { getFirestore, collection, addDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore'
 import { firebaseConfig } from '@/includes/firebase.config'
-import { getStorage, ref, uploadBytes } from 'firebase/storage'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -33,7 +33,7 @@ const fireStore = getFirestore(firebaseApp)
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(firebaseApp)
 
-export { auth, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, signOut, storage, ref,
-  uploadBytes, fireStore, collection, addDoc, updateProfile
+export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, fireStore, collection, addDoc, updateProfile, doc, setDoc,
+  storage, ref, uploadBytesResumable, getDownloadURL,
 }

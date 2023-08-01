@@ -3,7 +3,9 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <upload-frag></upload-frag>
+        <!-- Нам нужен доступ из Manage.vue к дочернему компоненту UploadFrag.vue
+          с помощью атрибута ref -->
+        <upload-frag ref="upload-ref"></upload-frag>
       </div>
       <div class="col-span-2">
         <div
@@ -137,9 +139,18 @@ import UploadFrag from '@/components/UploadFrag.vue'
 
 export default {
   name: 'ManageComp',
+
   components: {
     UploadFrag,
-  }
+  },
+
+  beforeRouteLeave(to, from, next) {
+    // Перед уходом со страницы /manage-music останавливаем выгрузки
+    // файлов на сервер, если они осуществляются в данный момент.
+    this.$refs['upload-ref'].cancelUploads()
+    // Уходим на другую страницу
+    next()
+  },
 
   // Локальная защита страницы от неавторизованных юзеров некошерна.
   // Если таких страниц десятки, то на каждой придется повторять этот
