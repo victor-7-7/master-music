@@ -1,4 +1,6 @@
 import { configure, defineRule, ErrorMessage, Field as VeeField, Form as VeeForm } from 'vee-validate'
+
+// https://vee-validate.logaretm.com/v4/guide/global-validators/
 import {
   alpha_dash as alphaDash,
   confirmed,
@@ -9,7 +11,10 @@ import {
   min_value as minValue,
   not_one_of as excluded,
   required,
+  alpha_spaces as alphaSpaces,
 } from '@vee-validate/rules'
+
+// https://vee-validate.logaretm.com/v4/guide/components/validation/
 
 export default {
   install(app/*, options*/) {
@@ -28,6 +33,7 @@ export default {
     defineRule('passwords_mismatch', confirmed)
     defineRule('excluded', excluded)
     defineRule('country_excluded', excluded)
+    defineRule('alpha_spaces', alphaSpaces)
 
     configure({
       // Функция вызывается всякий раз, когда глобальный валидатор

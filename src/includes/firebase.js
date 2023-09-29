@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth'
-import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, doc, setDoc,
+  query, where, getDocs, updateDoc } from 'firebase/firestore'
 import { firebaseConfig } from '@/includes/firebase.config'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
@@ -33,7 +34,12 @@ const fireStore = getFirestore(firebaseApp)
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(firebaseApp)
 
+// Мы выгружаем song-файл (песню) в хранилище 'storage' (Cloud Storage) и затем
+// записываем в коллекцию 'songs' базы 'fireStore' (Cloud Firestore) song-документ,
+// в котором содержится информация по данному файлу, в том числе url файла.
+
 export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, fireStore, collection, addDoc, updateProfile, doc, setDoc,
-  storage, ref, uploadBytesResumable, getDownloadURL,
+  storage, ref, uploadBytesResumable, getDownloadURL, query, where,
+  getDocs, updateDoc,
 }
