@@ -1,10 +1,11 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth'
+  signInWithEmailAndPassword, signOut, updateProfile, } from 'firebase/auth'
 import { getFirestore, collection, addDoc, doc, setDoc,
-  query, where, getDocs, updateDoc } from 'firebase/firestore'
+  query, where, getDocs, updateDoc, deleteDoc, getDoc, } from 'firebase/firestore'
 import { firebaseConfig } from '@/includes/firebase.config'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL,
+  deleteObject, } from 'firebase/storage'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -41,5 +42,5 @@ const storage = getStorage(firebaseApp)
 export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, fireStore, collection, addDoc, updateProfile, doc, setDoc,
   storage, ref, uploadBytesResumable, getDownloadURL, query, where,
-  getDocs, updateDoc,
+  getDocs, updateDoc, deleteObject, deleteDoc, getDoc,
 }

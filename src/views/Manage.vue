@@ -2,11 +2,13 @@
   <!-- Main Content -->
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
+
       <div class="col-span-1">
         <!-- Нам нужен доступ из Manage.vue к дочернему компоненту UploadFrag.vue
           с помощью атрибута ref -->
-        <upload-frag ref="upload-ref"></upload-frag>
+        <upload-frag ref="upload-ref" :addSong="addSong"></upload-frag>
       </div>
+
       <div class="col-span-2">
         <div
           class="bg-white rounded border border-gray-200 relative flex flex-col"
@@ -25,6 +27,8 @@
               :song="song"
               :updateSong="updateSong"
               :index="idx"
+              :removeSong="removeSong"
+              :updateUnsavedFlag="updateUnsavedFlag"
             ></composition-item>
           </div>
         </div>
@@ -50,15 +54,33 @@ export default {
   data() {
     return {
       songs: [],
+      // Редактирует ли юзер в данный момент песню?
+      unsavedFlag: false,
     }
   },
 
   methods: {
+    addSong(doc) {
+      const song = {
+        ...doc.data(),
+        docId: doc.id,
+      }
+      this.songs.push(song)
+    },
+
     updateSong(idx, values) {
       this.songs[idx].modified_name = values.modified_name
       this.songs[idx].genre = values.genre
-
     },
+
+    removeSong(idx) {
+      // Удаляем песню из массива, чтобы обновился список песен на странице
+      this.songs.splice(idx, 1)
+    },
+
+    updateUnsavedFlag(value) {
+      this.unsavedFlag = value
+    }
   },
 
   // Это первый лайфсайкл-хук, в котором мы уже можем лезть в базу
@@ -69,18 +91,20 @@ export default {
     const q = query(songsCollRef, where('uid', '==', auth.currentUser.uid))
     const querySnapshot = await getDocs(q)
 
-    querySnapshot.forEach((doc) => {
-      const song = {
-        // doc.data() is never undefined for query doc snapshots
-        ...doc.data(),
-        docId: doc.id,
-      }
-
-      this.songs.push(song)
-    })
+    /*querySnapshot.forEach((doc) => {
+      this.addSong(doc)
+    })*/
+    // Синтаксический сахар
+    querySnapshot.forEach(this.addSong)
   },
 
   beforeRouteLeave(to, from, next) {
+    // Если юзер редактировал песню в списке, то спрашиваем его
+    if (this.unsavedFlag) {
+      const leave = confirm("You have unsaved changes. Are you sure you want to leave?")
+      // Если юзер передумал покидать страницу, то завершаем метод
+      if (!leave) return
+    }
     // Перед уходом со страницы /manage-music останавливаем выгрузки
     // файлов на сервер, если они осуществляются в данный момент.
     this.$refs['upload-ref'].cancelUploads()

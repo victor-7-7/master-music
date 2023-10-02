@@ -45,7 +45,7 @@
 <script>
 import {
   ref, storage, uploadBytesResumable, getDownloadURL,
-  auth, fireStore, collection, addDoc,
+  auth, fireStore, collection, addDoc, getDoc,
 } from '@/includes/firebase'
 
 export default {
@@ -56,6 +56,10 @@ export default {
       uploads: [],
     }
   },
+  // Свойство addSong будет проброшено сюда из родительского компонента Manage.vue
+  // через v-bind атрибут - :addSong
+  props: ["addSong",],
+
   methods: {
     upload(event) {
       this.is_dragover = false
@@ -163,9 +167,13 @@ export default {
             }
             song.url = await getDownloadURL(uploadTask.snapshot.ref)
             // Добавляем song-документ в коллекцию songs Firestore
-            // сервиса с Auto-generated ID
+            // сервиса с Auto-generated ID и получаем ссылку на док
             // https://firebase.google.com/docs/firestore/manage-data/add-data
-            await addDoc(collection(fireStore, "songs"), song)
+            const songRef = await addDoc(collection(fireStore, "songs"), song)
+            // Получаем снэпшот документа
+            const songSnap = await getDoc(songRef)
+            // Триггерим родительский компонент Manage.vue, чтобы он добавил песню в список
+            this.addSong(songSnap)
 
             this.uploads[uploadObj.idx].isRunning = false
             this.uploads[uploadObj.idx].text_class = 'text-green-400'

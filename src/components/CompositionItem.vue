@@ -5,6 +5,7 @@
       <h4 class="inline-block text-xl">(genre - {{ song.genre }})</h4>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
+        @click.prevent="deleteSong"
       >
         <i class="fa fa-times"></i>
       </button>
@@ -23,10 +24,16 @@
       <vee-form :validation-schema="editSchema" :initial-values="song" @submit="updateComposition">
         <div class="mb-3">
           <label class="inline-block mb-2">Song Title</label>
+          <!-- The @input event fires when the value of an input-element has been changed -->
+          <!-- https://vee-validate.logaretm.com/v4/guide/components/validation/ -->
+          <!-- Note that input event is not considered to be a trigger because
+          it would make it too aggressive, you can configure the triggers in the
+          next section to suit your needs. -->
           <vee-field
             type="text" name="modified_name"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Song Title"
+            @input="updateUnsavedFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="modified_name"/>
         </div>
@@ -36,6 +43,7 @@
             type="text" name="genre"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
+            @input="updateUnsavedFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="genre"/>
         </div>
@@ -50,7 +58,7 @@
           type="button"
           class="py-1.5 px-3 rounded text-white bg-gray-600"
           :disabled="in_submission"
-          @click.prevent="showForm = false"
+          @click.prevent="goBack"
         >
           Go Back
         </button>
@@ -60,7 +68,7 @@
 </template>
 
 <script>
-import { doc, fireStore, updateDoc } from '@/includes/firebase'
+import { deleteDoc, deleteObject, doc, fireStore, ref, storage, updateDoc } from '@/includes/firebase'
 
 export default {
   name: 'CompositionItem',
@@ -73,7 +81,7 @@ export default {
       // компоненте (Manage.vue) будет undefined, то движок кинет ворнинг
       required: true,
     },
-    // Аналогично сюда из Manage.vue пробрасывается функция и число
+    // Аналогично сюда из Manage.vue пробрасываются функции и индекс
     updateSong: {
       type: Function,
       required: true,
@@ -81,7 +89,15 @@ export default {
     index: {
       type: Number,
       required: true,
-    }
+    },
+    removeSong: {
+      type: Function,
+      required: true,
+    },
+    updateUnsavedFlag: {
+      type: Function,
+      // Эта функция опциональна, может быть undefined
+    },
   },
 
   data() {
@@ -123,13 +139,40 @@ export default {
         return
       }
 
-      // Если все ок, то триггерим родителя (Manage,vue) чтобы он обновил
+      // Если все ок, то триггерим родителя (Manage.vue) чтобы он обновил
       // содержимое полей песни на странице
       this.updateSong(this.index, values)
+      // Изменения в форме были сохранены
+      this.updateUnsavedFlag(false)
 
       this.in_submission = false
       this.alert_variant = "bg-green-500"
       this.alert_msg = "Success!"
+    },
+
+    goBack() {
+      // Юзер решил не сохранять изменения в форме
+      this.updateUnsavedFlag(false)
+      this.showForm = false
+    },
+
+    async deleteSong() {
+      // Надо, чтобы секьюр-правила для хранилища и правила для БД
+      // позволяли делать удаление файлов и документов соответственно
+      // https://firebase.google.com/docs/rules/basics?hl=en&authuser=0
+
+      // Файл песни в хранилище (имена файлов в директории songs уникальны)
+      const songFileRef = ref(storage, `songs/${this.song.original_name}`)
+      // https://firebase.google.com/docs/storage/web/delete-files
+      await deleteObject(songFileRef)
+
+      // Документ с инфой о песне в БД
+      const docRef = doc(fireStore, "songs", this.song.docId)
+      // https://firebase.google.com/docs/firestore/manage-data/delete-data#delete_documents
+      await deleteDoc(docRef)
+
+      // Триггерим родительский компонент, чтобы он удалил песню из списка
+      this.removeSong(this.index)
     },
   }
 }
