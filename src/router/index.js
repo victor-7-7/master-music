@@ -4,6 +4,7 @@ import About from '@/views/About.vue'
 import Manage from '@/views/Manage.vue'
 import useUserStore from '@/stores/user'
 import useModalStore from "@/stores/modal"
+import Song from '@/views/Song.vue'
 
 const routes = [
   {
@@ -39,6 +40,15 @@ const routes = [
   },
   // Var.1 более предпочтителен, чем Var.2 с точки зрения поисковой оптимизации
   // сайта для поисковых движков веба.
+
+  {
+    name: 'song',
+    // https://router.vuejs.org/guide/essentials/dynamic-matching.html
+    // Путь с динамическим параметром (сегментом) :id. Движок создает
+    // объект $route.params, в котором хранит значение для свойства id
+    path: '/song/:id',
+    component: Song,
+  },
 
   // Если ни один из вышеперечисленных путей не подошел под написанный
   // в адресной строке браузера, то перекидываем юзера на домашку

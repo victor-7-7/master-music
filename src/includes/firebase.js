@@ -2,7 +2,8 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, updateProfile, } from 'firebase/auth'
 import { getFirestore, collection, addDoc, doc, setDoc,
-  query, where, getDocs, updateDoc, deleteDoc, getDoc, } from 'firebase/firestore'
+  query, where, getDocs, updateDoc, deleteDoc, getDoc,
+  limit, startAfter, orderBy, } from 'firebase/firestore'
 import { firebaseConfig } from '@/includes/firebase.config'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL,
   deleteObject, } from 'firebase/storage'
@@ -42,5 +43,6 @@ const storage = getStorage(firebaseApp)
 export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, fireStore, collection, addDoc, updateProfile, doc, setDoc,
   storage, ref, uploadBytesResumable, getDownloadURL, query, where,
-  getDocs, updateDoc, deleteObject, deleteDoc, getDoc,
+  getDocs, updateDoc, deleteObject, deleteDoc, getDoc, limit, startAfter,
+  orderBy,
 }
