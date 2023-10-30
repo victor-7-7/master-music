@@ -1,7 +1,17 @@
 <template>
   <app-header></app-header>
-
-  <router-view></router-view>
+  <!-- Задача router-view элемента хостить содержимое компонента,
+  на страницу которого рутер нас перебрасывает (предыдущий компонент
+  заменяется новым). v-slot нужен для эффекта транзитивного перехода,
+  то есть мы хотим контролировать процесс перехода. -->
+  <!-- Для транзита необходимо, чтобы компонент имел единственный рут-элемент.
+   Если рут-элементов несколько, то движок кинет ошибку. Поэтому мы поместим
+   содержимое темплейтов Song,vue и Home.vue в main-элемент. -->
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component"></component>
+    </transition>
+  </router-view>
 
   <app-player></app-player>
 
@@ -47,3 +57,18 @@ export default {
   }
 }
 </script>
+
+<style>
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: all 0.7s linear;
+}
+
+.fade-leave-to {
+  transition: all 0.7s linear;
+  opacity: 0;
+}
+</style>
