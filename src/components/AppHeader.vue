@@ -33,6 +33,13 @@
             </li>
           </template>
         </ul>
+        <ul class="ml-auto">
+          <li>
+            <a class="px-2 text-white" href="#" @click.prevent="changeLocale">
+              {{ currentLocale }}
+            </a>
+          </li>
+        </ul>
       </div>
     </nav>
   </header>
@@ -48,6 +55,9 @@ export default {
   computed: {
     ...mapWritableState(useModalStore, ['isOpen']),
     ...mapWritableState(useUserStore, ['userLoggedIn']),
+    currentLocale() {
+      return this.$i18n.locale === "en" ? "En" : "Rus"
+    }
   },
   methods: {
     // https://pinia.vuejs.org/core-concepts/actions.html
@@ -69,6 +79,11 @@ export default {
         // то выкидываем его на домашнюю страницу сайта.
         this.$router.replace({ name: 'home' })
       }
+    },
+
+    changeLocale() {
+      // Переключаемся между двумя языками (для простоты)
+      this.$i18n.locale = this.$i18n.locale === "en" ? "ru" : "en"
     },
   },
 }

@@ -11,6 +11,7 @@ import './assets/main.css'
 import { auth } from './includes/firebase'
 
 import Icon from "./directives/icon"
+import i18n from '@/includes/i18n'
 
 let app = null
 // Мы должны сначала загрузить Firebase Auth service, чтобы знать
@@ -24,8 +25,10 @@ auth.onAuthStateChanged(() => {
     .use(createPinia())
     .use(router)
     .use(VeeValidatePlugin, /*{ foo: 100 }*/)
-      // Регистрируем кастомную директиву. Теперь в темплейте любого компонента
-      // мы можем использовать на элементах атрибут v-icon.
+    // Регистрируем плагин интернационализации интерфейса
+    .use(i18n)
+    // Регистрируем кастомную директиву. Теперь в темплейте любого компонента
+    // мы можем использовать на элементах атрибут v-icon.
     .directive("icon", Icon)
     // Монтируем Vue App в html-элемент с id="app" (в index.html). Этот
     // элемент будет root-контейнером для Vue App.
