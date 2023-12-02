@@ -12,6 +12,14 @@ import { auth } from './includes/firebase'
 
 import Icon from "./directives/icon"
 import i18n from '@/includes/i18n'
+import { registerSW } from 'virtual:pwa-register'
+
+// Рекомендуется зарегить Service Worker (библиотечка гугла) как можно раньше,
+// так как у воркер-процесса отсутствуют хуки
+registerSW({
+  // Не ждать, пока окно аппы будет загружено
+  immediate: true,
+})
 
 let app = null
 // Мы должны сначала загрузить Firebase Auth service, чтобы знать
