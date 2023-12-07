@@ -92,6 +92,23 @@ export default {
           return
         }
 
+        // Если юзер не в сети, то выгрузить файл на сервер он не сможет
+        if (!navigator.onLine) {
+          const failUploadObj = {
+            task: {},
+            current_progress: 100,
+            name: file.name,
+            variant: 'bg-red-400',
+            icon: 'fas fa-times',
+            text_class: 'text-red-400',
+            idx: 0,
+            isRunning: true, // показать красную полосу загрузки
+          }
+          const arrayLength = this.uploads.push(failUploadObj)
+          this.uploads[arrayLength - 1].idx = arrayLength - 1
+          return
+        }
+
         // https://firebase.google.com/docs/storage/web/create-reference?authuser=0
         // const storageRef = ref(storage) // vue-music-1075a.appspot.com
         // const songsDirRef = ref(storage, 'songs') // vue-music-1075a.appspot.com/songs
@@ -102,7 +119,7 @@ export default {
         })*/
         const uploadTask = uploadBytesResumable(fileRef, file)
         const uploadObj = {
-          // Это свойство требуется для отмены выгрузки и т.п.
+          // Свойство task требуется для отмены выгрузки и т.п.
           task: uploadTask,
           current_progress: 0,
           name: file.name,
