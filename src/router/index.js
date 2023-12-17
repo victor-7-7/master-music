@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
-import Manage from '@/views/Manage.vue'
 import useUserStore from '@/stores/user'
 import useModalStore from "@/stores/modal"
-import Song from '@/views/Song.vue'
+
+// Будем грузить компоненты динамически в виде chunk-файлов (движок
+// Vite будет сохранять их как JS-файлы)
+const Home = () => import("@/views/Home.vue")
+const About = () => import("@/views/About.vue")
+const Manage = () => import("@/views/Manage.vue")
+const Song = () => import("@/views/Song.vue")
 
 const routes = [
   {

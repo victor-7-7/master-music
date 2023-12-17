@@ -1,4 +1,7 @@
-import _ from "lodash"
+// import _ from "lodash"
+// Для уменьшения размера бандла берем только функции
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
 
 export default {
   // Функция автоматически регистрирует компоненты, находящиеся в ../components/base/
@@ -13,8 +16,8 @@ export default {
     // Конвертим объект в массив для итерации
     Object.entries(baseComps).forEach(([path, module]) => {
       // Для удобства оперируем именами модулей в паскаль-кейс нотации
-      const compName = _.upperFirst(
-        _.camelCase(
+      const compName = upperFirst(
+        camelCase(
           path
             .split("/")
             .pop()

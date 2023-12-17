@@ -16,12 +16,17 @@ import { registerSW } from 'virtual:pwa-register'
 
 import GlobalComponents from "./includes/_globals"
 
+import progressBar from '@/includes/progress-bar'
+import "nprogress/nprogress.css"
+
 // Рекомендуется зарегить Service Worker (библиотечка гугла) как можно раньше,
 // так как у воркер-процесса отсутствуют хуки
 registerSW({
   // Не ждать, пока окно аппы будет загружено
   immediate: true,
 })
+
+progressBar(router)
 
 let app = null
 // Мы должны сначала загрузить Firebase Auth service, чтобы знать
