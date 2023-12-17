@@ -115,7 +115,7 @@ export default {
     }
   },
 
-  async created() {
+  /*async created() {
     // https://firebase.google.com/docs/firestore/query-data/get-data#get_a_document
     // На эту страницу мы приходим, кликнув по router-link ссылке во фрагменте
     // SongItem.vue. В том фрагменте движок цепляет к пути динамический параметр id
@@ -145,6 +145,47 @@ export default {
     this.sort = sort === '1' || sort === '2' ? sort : '1'
     // Мы не добавляем в song-объект доп-свойство id, ибо оно доступно через $route.params
     this.song = docSnap.data()
+    await this.getComments()
+  },*/
+
+  // Section 18, video 003, time 03:00. Мы хотим побыстрее показать
+  // юзеру страницу песни, а комменты будут загружены позже
+  async beforeRouteEnter(to, from, next) {
+    // В этом хуке компонент еще не загружен и мы не имеем доступа к data()
+    // и к его фичам, например this.$route. Но можем использовать - to
+    const docRef = doc(fireStore, "songs", to.params.id)
+    const docSnap = await getDoc(docRef)
+    // Параметр next deprecated и будет удален в дальнейшем
+    // https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-third-argument-next
+    // Дотягиваемся до контекста вместо this, асинхронных задач уже не имеем
+    next((ctx) => {
+      // В этой точке компонент уже загружен. Если в базе нет документа
+      // с таким id, то движок вернет снэпшот с установленным в false свойством exists
+      if (!docSnap.exists()) {
+        // В этом случае кидаем юзера на домашнюю страницу
+        ctx.$router.push({ name: 'home' })
+        return
+      }
+      // https://router.vuejs.org/guide/
+      // Каждому компоненту соответствует свой рут (route). При создании
+      // компонента движок инжектирует в него $route-объект. Извлекаем из
+      // query-части рута параметр sort
+      const { sort } = ctx.$route.query
+      // URL разбивается на части - протокол (как браузеру читать url-строку),
+      // домен (адрес сервера в сети), порт (куда стучаться на сервере), путь
+      // (раньше это был адрес запрашиваемого ресурса на сервере, в наше время
+      // это абстракция для получения ресурса), запрос (параметры ключ=значение),
+      // фрагмент (якорь - закладка на странице, куда браузер должен переместиться)
+      // https://developer.mozilla.org/ru/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL
+
+      // Задаем соответствующее значение для sort-свойства компонента
+      ctx.sort = sort === '1' || sort === '2' ? sort : '1'
+      // Мы не добавляем в song-объект доп-свойство id, ибо оно доступно через $route.params
+      ctx.song = docSnap.data()
+    })
+  },
+
+  async created() {
     await this.getComments()
   },
 

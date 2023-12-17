@@ -14,6 +14,8 @@ import Icon from "./directives/icon"
 import i18n from '@/includes/i18n'
 import { registerSW } from 'virtual:pwa-register'
 
+import GlobalComponents from "./includes/_globals"
+
 // Рекомендуется зарегить Service Worker (библиотечка гугла) как можно раньше,
 // так как у воркер-процесса отсутствуют хуки
 registerSW({
@@ -35,6 +37,8 @@ auth.onAuthStateChanged(() => {
     .use(VeeValidatePlugin, /*{ foo: 100 }*/)
     // Регистрируем плагин интернационализации интерфейса
     .use(i18n)
+    // Регистрируем глобальные компоненты (base comps)
+    .use(GlobalComponents)
     // Регистрируем кастомную директиву. Теперь в темплейте любого компонента
     // мы можем использовать на элементах атрибут v-icon.
     .directive("icon", Icon)

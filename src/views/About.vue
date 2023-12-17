@@ -1,5 +1,6 @@
 <template>
-  <h1>About Page</h1>
+  <h1>This is an About Page</h1>
+  <base-button-gen/>
 </template>
 
 <script>
