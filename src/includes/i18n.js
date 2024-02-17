@@ -4,6 +4,7 @@ import ru from "@/locales/ru.json"
 
 // https://vue-i18n.intlify.dev/guide/
 // https://vue-i18n.intlify.dev/guide/essentials/syntax.html
+// https://vue-i18n.intlify.dev/guide/migration/breaking
 
 export default createI18n({
   locale: "en",

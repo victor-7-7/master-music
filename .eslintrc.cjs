@@ -18,8 +18,26 @@ module.exports = {
       ],
       extends: [
         'plugin:cypress/recommended'
-      ]
-    }
+      ],
+    },
+    // Section 20, video 004, time 04:40
+    {
+      files: [
+        "src/components/__tests__/**.spec.js"
+      ],
+      // Свойства объекта globals будут доступны как переменные
+      // окружения в тестовых файлах
+      globals: {
+        // Этой переменной окружения (как и последующим) кодер не может
+        // задать новое значение
+        test: "readonly",
+        describe: "readonly",
+        expect: "readonly",
+        vi: "readonly",
+        beforeEach: "readonly",
+        it: "readonly",
+      },
+    },
   ],
   parserOptions: {
     ecmaVersion: 'latest'

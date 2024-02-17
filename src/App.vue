@@ -24,8 +24,8 @@ export default {
   name: 'App',
   components: {
     AppHeader,
-    AppAuth,
     AppPlayer,
+    AppAuth,
   },
   computed: {
     ...mapWritableState(useUserStore, ['userLoggedIn'])

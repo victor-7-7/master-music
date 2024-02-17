@@ -37,7 +37,7 @@ auth.onAuthStateChanged(() => {
     // Создаем Vue App после того, как нам стала доступна инфа по аутентификации
     app = createApp(App)
     // Регистрируем плагины
-    .use(createPinia())
+    app.use(createPinia())
     .use(router)
     .use(VeeValidatePlugin, /*{ foo: 100 }*/)
     // Регистрируем плагин интернационализации интерфейса

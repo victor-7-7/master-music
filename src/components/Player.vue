@@ -43,7 +43,6 @@ export default {
 
   methods: {
     ...mapActions(usePlayerStore, ["toggleAudio", "updateSeek"]),
-
   },
 
   computed: {

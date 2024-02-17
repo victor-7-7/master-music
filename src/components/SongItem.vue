@@ -1,6 +1,8 @@
 <template>
+  <!--Вариант с классами (section 20, video 012, time 5:00)-->
+  <!--https://michaelnthiessen.com/dynamically-add-class-name-->
   <li
-    class="flex justify-between items-center p-3 pl-6 cursor-pointer transition duration-300 hover:bg-gray-50"
+    class="flex justify-between items-center p-3 pl-6 cursor-pointer transition duration-300 hover:bg-gray-50" :class="`song-id-${song.docId}`" :id="`song-id-${song.docId}`"
   >
     <div>
       <router-link

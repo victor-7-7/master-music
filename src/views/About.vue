@@ -5,9 +5,13 @@
 
 <script>
 import { defineComponent } from 'vue'
+// import ButtonGen from '@/components/base/ButtonGen.vue'
 
 export default defineComponent({
   name: "AboutComp",
+  /*components: {
+    ButtonGen,
+  },*/
   mounted() {
     console.log('About component mounted')
   },

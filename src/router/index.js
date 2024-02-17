@@ -91,4 +91,7 @@ router.beforeEach(async (to, from) => {
   }
 })
 
+// https://test-utils.vuejs.org/guide/advanced/vue-router.html
+export { routes } // Для тестов
+
 export default router

@@ -31,3 +31,4 @@ dev-dist
 notes.txt
 src/includes/firebase.config.js
 stats.html
+.vercel

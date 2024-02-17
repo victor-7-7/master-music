@@ -52,6 +52,7 @@ import useUserStore from '@/stores/user'
 
 export default {
   name: "AppHeader",
+
   computed: {
     ...mapWritableState(useModalStore, ['isOpen']),
     ...mapWritableState(useUserStore, ['userLoggedIn']),
@@ -59,6 +60,7 @@ export default {
       return this.$i18n.locale === "en" ? "En" : "Rus"
     }
   },
+
   methods: {
     // https://pinia.vuejs.org/core-concepts/actions.html
     ...mapActions(useUserStore, ['userSignOut']),
